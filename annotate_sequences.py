@@ -1,4 +1,5 @@
 import subprocess
+import argparse
 from Bio import AlignIO
 from Bio.Align import MultipleSeqAlignment
 from Bio.SeqRecord import SeqRecord
@@ -119,11 +120,7 @@ def adjust_annotation_for_gaps_gff3(annotation_file, alignment_file, output_file
 
 
 def fill_unannotated_regions_gff3(annotation_file, dna_length, output_file):
-
-    alignment = AlignIO.read(alignment_file, "fasta")
-    
-    # Identify the reference sequence (assume it's the first sequence in the alignment)
-    reference_seq = str(alignment[0].seq)
+    """Add unannotated region records to a GFF3 annotation file."""
 
     adjusted_annotations = []
     
@@ -214,14 +211,15 @@ def main():
     parser.add_argument("--sequences_fasta", required=True, help="Path to the sequences FASTA file to align.")
     parser.add_argument("--annotation_file", required=True, help="Path to the annotation GFF3 file.")
     parser.add_argument("--alignment_file", required=True, help="Path to save the aligned sequences FASTA file.")
+    parser.add_argument("--clean_alignment_file", required=True, help="Path to save the cleaned alignment FASTA file.")
     parser.add_argument("--output_annotation_file", required=True, help="Path to save the adjusted annotation GFF3 file.")
 
     args = parser.parse_args()
 
-    run_mafft_alignment(args.reference_fasta, args.sequences_fasta, args.alignment_file)
-    remove_gaps_and_ns_from_alignment(args.alignment_file, args.alignment_file)
-    adjust_annotation_for_gaps_gff3(args.annotation_file, args.alignment_file, args.output_annotation_file)
-    alignment = AlignIO.read(clean_alignment_file, "fasta")
+    run_mafft_alignment_linux(args.reference_fasta, args.sequences_fasta, args.alignment_file)
+    remove_gaps_and_ns_from_alignment(args.alignment_file, args.clean_alignment_file)
+    adjust_annotation_for_gaps_gff3(args.annotation_file, args.clean_alignment_file, args.output_annotation_file)
+    alignment = AlignIO.read(args.clean_alignment_file, "fasta")
     alignment_length = alignment.get_alignment_length()
     fill_unannotated_regions_gff3(args.output_annotation_file, alignment_length, args.output_annotation_file)
 
@@ -229,21 +227,3 @@ def main():
 if __name__ == "__main__":
     main()
 
-if not 'Original use without linux command line':
-
-    reference_fasta = "RefSeqNC_008092.fasta"
-    sequences_fasta = "___final_sequences//sequences_complete.fasta"
-    annotation_file = "ref_sequence.gff3"
-    alignment_file = "aligned_sequences.fasta"
-    clean_alignment_file = "aligned_sequences_clean.fasta"
-    output_annotation_file = "adjusted_annotation.gff3"
-    outoutput_annotation_file = "adjusted__filled_annotation.gff3"
-
-    run_mafft_alignment_linux(reference_fasta, sequences_fasta, alignment_file)
-    remove_gaps_and_ns_from_alignment(alignment_file, clean_alignment_file)
-    adjust_annotation_for_gaps_gff3(annotation_file, clean_alignment_file, output_annotation_file)
-
-    alignment = AlignIO.read(clean_alignment_file, "fasta")
-    alignment_length = alignment.get_alignment_length()
-
-    fill_unannotated_regions_gff3(output_annotation_file, alignment_length, outoutput_annotation_file)

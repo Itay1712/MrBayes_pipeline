@@ -1,0 +1,3 @@
+reference_fasta: RefSeqNC_008092.fasta
+sequences_fasta: sequences_complete.fasta
+output_prefix: analysis
