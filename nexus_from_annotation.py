@@ -1,5 +1,6 @@
 from Bio import AlignIO
 from collections import defaultdict
+import argparse
 
 def create_nexus_from_alignment_and_annotation(alignment_file, annotation_file, output_nexus):
     """
@@ -51,18 +52,9 @@ def create_nexus_from_alignment_and_annotation(alignment_file, annotation_file, 
         
         # Write partition information using the GFF3 regions
         nexus_file.write("BEGIN SETS;\n")
-        start = 1
         for region_name, region_start, region_end in regions:
-            length = region_end - region_start + 1
-            end = start + length - 1
             nexus_file.write(f"    CHARSET {region_name} = {region_start}-{region_end};\n")
-            start = end + 1
         nexus_file.write("END;\n\n")
-        for region_name, region_start, region_end in regions:
-            length = region_end - region_start + 1
-            end = start + length - 1
-            nexus_file.write(f"    CHARSET {region_name} = {region_start}-{region_end};\n")
-            start = end + 1
         # Write MrBayes block for partitioned analysis
         nexus_file.write("BEGIN MRBAYES;\n")
 
@@ -99,9 +91,3 @@ if __name__ == "__main__":
     main()
 
 
-if not 'Original use without linux command line':
-    alignment_file = "aligned_sequences_clean.fasta"
-    annotation_file = "adjusted__filled_annotation.gff3"
-    output_nexus = "output.nexus"
-
-    create_nexus_from_alignment_and_annotation(alignment_file, annotation_file, output_nexus)
