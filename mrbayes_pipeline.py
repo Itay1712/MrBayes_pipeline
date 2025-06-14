@@ -1,13 +1,13 @@
 import yaml
 from pathlib import Path
 from Bio import AlignIO
-from annotate_sequences import (
+from scripts.annotate_sequences import (
     run_mafft_alignment_linux,
     remove_gaps_and_ns_from_alignment,
     adjust_annotation_for_gaps_gff3,
     fill_unannotated_regions_gff3,
 )
-from nexus_from_annotation import create_nexus_from_alignment_and_annotation
+from scripts.nexus_from_annotation import create_nexus_from_alignment_and_annotation
 
 
 def run_pipeline(config_file: str):
@@ -16,14 +16,20 @@ def run_pipeline(config_file: str):
 
     ref_fasta = cfg['reference_fasta']
     seqs_fasta = cfg['sequences_fasta']
-    annotation = str(Path(ref_fasta).with_suffix('.gff3'))
+    annotation = cfg['annotation_file']
+    # annotation = str(Path(ref_fasta).with_suffix('.gff3'))
     prefix = cfg.get('output_prefix', 'output')
 
-    alignment_file = f"{prefix}_alignment.fasta"
-    clean_alignment = f"{prefix}_clean.fasta"
-    adjusted_annotation = f"{prefix}_adjusted.gff3"
-    filled_annotation = f"{prefix}_filled.gff3"
-    nexus_file = f"{prefix}.nex"
+    base_dir = Path("processed") / prefix
+
+    alignment_file = base_dir / f"{prefix}_alignment.fasta"
+    clean_alignment = base_dir / f"{prefix}_clean.fasta"
+    adjusted_annotation = base_dir / f"{prefix}_adjusted.gff3"
+    filled_annotation = base_dir / f"{prefix}_filled.gff3"
+    nexus_file = base_dir / f"{prefix}.nex"
+
+    base_dir.mkdir(parents=True, exist_ok=True)
+
 
     # Align sequences to reference
     run_mafft_alignment_linux(ref_fasta, seqs_fasta, alignment_file)

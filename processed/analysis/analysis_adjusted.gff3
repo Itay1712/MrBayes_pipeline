@@ -1,0 +1,45 @@
+##gff-version 3
+#!gff-spec-version 1.21
+#!processor NCBI annotwriter
+##sequence-region NC_008092.1 1 16729
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=9612
+NC_008092.1	RefSeq	tRNA-Phe	1	69	.	+	.	ID=rna-NC_008092.1:1..69;gbkey=tRNA;product=tRNA-Phe
+NC_008092.1	RefSeq	s-rRNA	70	1024	.	+	.	ID=rna-NC_008092.1:70..1023;Note=12S ribosomal RNA;gbkey=rRNA;product=s-rRNA
+NC_008092.1	RefSeq	tRNA-Val	1025	1091	.	+	.	ID=rna-NC_008092.1:1024..1090;gbkey=tRNA;product=tRNA-Val
+NC_008092.1	RefSeq	l-rRNA	1092	2676	.	+	.	ID=rna-NC_008092.1:1091..2670;Note=16S ribosomal RNA;gbkey=rRNA;product=l-rRNA
+NC_008092.1	RefSeq	tRNA-Leu_UUR	2677	2751	.	+	.	ID=rna-NC_008092.1:2671..2745;codons=UUR;gbkey=tRNA;product=tRNA-Leu
+NC_008092.1	RefSeq	gene_ND1	2754	3710	.	+	.	ID=gene-ND1;Dbxref=GeneID:4097764;Name=ND1;gbkey=Gene;gene=ND1;gene_biotype=protein_coding
+NC_008092.1	RefSeq	tRNA-Ile	3710	3778	.	+	.	ID=rna-NC_008092.1:3704..3772;gbkey=tRNA;product=tRNA-Ile
+NC_008092.1	RefSeq	tRNA-Gln	3775	3849	.	-	.	ID=rna-NC_008092.1:3769..3843;gbkey=tRNA;product=tRNA-Gln
+NC_008092.1	RefSeq	tRNA-Met	3851	3920	.	+	.	ID=rna-NC_008092.1:3845..3914;gbkey=tRNA;product=tRNA-Met
+NC_008092.1	RefSeq	gene_ND2	3921	4964	.	+	.	ID=gene-ND2;Dbxref=GeneID:4097765;Name=ND2;gbkey=Gene;gene=ND2;gene_biotype=protein_coding
+NC_008092.1	RefSeq	tRNA-Trp	4963	5030	.	+	.	ID=rna-NC_008092.1:4957..5024;gbkey=tRNA;product=tRNA-Trp
+NC_008092.1	RefSeq	tRNA-Ala	5044	5112	.	-	.	ID=rna-NC_008092.1:5038..5106;gbkey=tRNA;product=tRNA-Ala
+NC_008092.1	RefSeq	tRNA-Asn	5114	5185	.	-	.	ID=rna-NC_008092.1:5108..5179;gbkey=tRNA;product=tRNA-Asn
+NC_008092.1	RefSeq	origin_of_replication	5186	5223	.	+	.	ID=id-NC_008092.1:5180..5216;Note=origin of L-strand replication;gbkey=rep_origin
+NC_008092.1	RefSeq	tRNA-Cys	5220	5287	.	-	.	ID=rna-NC_008092.1:5213..5280;gbkey=tRNA;product=tRNA-Cys
+NC_008092.1	RefSeq	tRNA-Tyr	5288	5355	.	-	.	ID=rna-NC_008092.1:5281..5348;gbkey=tRNA;product=tRNA-Tyr
+NC_008092.1	RefSeq	gene_COX1	5357	6901	.	+	.	ID=gene-COX1;Dbxref=GeneID:4097766;Name=COX1;gbkey=Gene;gene=COX1;gene_biotype=protein_coding
+NC_008092.1	RefSeq	tRNA-Ser_UCN	6899	6969	.	-	.	ID=rna-NC_008092.1:6892..6962;codons=UCN;gbkey=tRNA;product=tRNA-Ser
+NC_008092.1	RefSeq	tRNA-Asp	6974	7041	.	+	.	ID=rna-NC_008092.1:6967..7034;gbkey=tRNA;product=tRNA-Asp
+NC_008092.1	RefSeq	gene_COX2	7042	7725	.	+	.	ID=gene-COX2;Dbxref=GeneID:4097767;Name=COX2;gbkey=Gene;gene=COX2;gene_biotype=protein_coding
+NC_008092.1	RefSeq	tRNA-Lys	7743	7809	.	+	.	ID=rna-NC_008092.1:7736..7802;gbkey=tRNA;product=tRNA-Lys
+NC_008092.1	RefSeq	gene_ATP8	7811	8014	.	+	.	ID=gene-ATP8;Dbxref=GeneID:4097768;Name=ATP8;gbkey=Gene;gene=ATP8;gene_biotype=protein_coding
+NC_008092.1	RefSeq	gene_ATP6	7972	8652	.	+	.	ID=gene-ATP6;Dbxref=GeneID:4097769;Name=ATP6;gbkey=Gene;gene=ATP6;gene_biotype=protein_coding
+NC_008092.1	RefSeq	gene_COX3	8652	9435	.	+	.	ID=gene-COX3;Dbxref=GeneID:4097770;Name=COX3;gbkey=Gene;gene=COX3;gene_biotype=protein_coding
+NC_008092.1	RefSeq	tRNA-Gly	9436	9503	.	+	.	ID=rna-NC_008092.1:9429..9496;gbkey=tRNA;product=tRNA-Gly
+NC_008092.1	RefSeq	gene_ND3	9504	9850	.	+	.	ID=gene-ND3;Dbxref=GeneID:4097771;Name=ND3;gbkey=Gene;gene=ND3;gene_biotype=protein_coding
+NC_008092.1	RefSeq	tRNA-Arg	9850	9919	.	+	.	ID=rna-NC_008092.1:9843..9911;gbkey=tRNA;product=tRNA-Arg
+NC_008092.1	RefSeq	gene_ND4L	9922	10218	.	+	.	ID=gene-ND4L;Dbxref=GeneID:4097772;Name=ND4L;gbkey=Gene;gene=ND4L;gene_biotype=protein_coding
+NC_008092.1	RefSeq	gene_ND4	10212	11589	.	+	.	ID=gene-ND4;Dbxref=GeneID:4097760;Name=ND4;gbkey=Gene;gene=ND4;gene_biotype=protein_coding
+NC_008092.1	RefSeq	tRNA-His	11588	11658	.	+	.	ID=rna-NC_008092.1:11580..11650;gbkey=tRNA;product=tRNA-His
+NC_008092.1	RefSeq	tRNA-Ser_AGY	11659	11718	.	+	.	ID=rna-NC_008092.1:11651..11710;codons=AGY;gbkey=tRNA;product=tRNA-Ser
+NC_008092.1	RefSeq	tRNA-Leu_CUN	11719	11788	.	+	.	ID=rna-NC_008092.1:11711..11780;codons=CUN;gbkey=tRNA;product=tRNA-Leu
+NC_008092.1	RefSeq	gene_ND5	11789	13609	.	+	.	ID=gene-ND5;Dbxref=GeneID:4097761;Name=ND5;gbkey=Gene;gene=ND5;gene_biotype=protein_coding
+NC_008092.1	RefSeq	gene_ND6	13593	14120	.	-	.	ID=gene-ND6;Dbxref=GeneID:4097762;Name=ND6;gbkey=Gene;gene=ND6;gene_biotype=protein_coding
+NC_008092.1	RefSeq	tRNA-Glu	14119	14189	.	-	.	ID=rna-NC_008092.1:14111..14181;gbkey=tRNA;product=tRNA-Glu
+NC_008092.1	RefSeq	gene_CYTB	14194	15333	.	+	.	ID=gene-CYTB;Dbxref=GeneID:4097763;Name=CYTB;gbkey=Gene;gene=CYTB;gene_biotype=protein_coding
+NC_008092.1	RefSeq	tRNA-Thr	15334	15403	.	+	.	ID=rna-NC_008092.1:15326..15395;gbkey=tRNA;product=tRNA-Thr
+NC_008092.1	RefSeq	tRNA-Pro	15403	15468	.	-	.	ID=rna-NC_008092.1:15395..15460;gbkey=tRNA;product=tRNA-Pro
+NC_008092.1	RefSeq	D_loop	15469	16796	.	+	.	ID=id-NC_008092.1:15461..16729;Note=control region;gbkey=D-loop
+
