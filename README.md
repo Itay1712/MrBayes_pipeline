@@ -20,9 +20,5 @@ The script will create an alignment with MAFFT, adjust the reference annotations
 
 - `reference_fasta`: path to the reference genome sequence.
 - `sequences_fasta`: path to the sequences to align.
-- `output_prefix`: prefix for all pipeline outputs (alignment, annotation and NEXUS file).
-
-The reference annotation file is expected at the same location as the reference
-FASTA, with the extension replaced by `.gff3`.
-
-Ensure that MAFFT is installed and available on your system path before running the pipeline.
+- `annotation_file`: path to gff3 file with annotation to reference
+- `output_prefix`: output folder name and prefix for all pipeline outputs (alignment, annotation and NEXUS file).
