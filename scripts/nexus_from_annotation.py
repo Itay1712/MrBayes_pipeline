@@ -19,7 +19,7 @@ def create_nexus_from_alignment_and_annotation(alignment_file, annotation_file, 
     nchar = len(alignment[0])  # Number of characters (alignment length)
     
     # Step 2: Parse the GFF3 file to extract regions and calculate region lengths
-    region_lengths = defaultdict(int)
+    region_to_length = defaultdict(int)
     regions = []
     
     with open(annotation_file, 'r') as gff:
@@ -31,7 +31,7 @@ def create_nexus_from_alignment_and_annotation(alignment_file, annotation_file, 
             region_start = int(fields[3])
             region_end = int(fields[4])
             region_length = region_end - region_start + 1
-            region_lengths[region_name] += region_length
+            region_to_length[region_name] += region_length
             regions.append((region_name, region_start, region_end))
     
     # Step 3: Generate NEXUS file
@@ -50,24 +50,39 @@ def create_nexus_from_alignment_and_annotation(alignment_file, annotation_file, 
         nexus_file.write("    ;\n")
         nexus_file.write("END;\n\n")
         
-        # Write partition information using the GFF3 regions
+        ## Write partition information using the GFF3 regions
+
+        ## BEGIN SETS is used for readability in some external tools, MrBayes cant read this block
         nexus_file.write("BEGIN SETS;\n")
-        for region_name, region_start, region_end in regions:
+        start = 1
+        for region_name, region_start, region_end in regions:         # Write partitions
+            length = region_end - region_start + 1
+            end = start + length - 1
             nexus_file.write(f"    CHARSET {region_name} = {region_start}-{region_end};\n")
+            start = end + 1
         nexus_file.write("END;\n\n")
-        # Write MrBayes block for partitioned analysis
+
+        ## MRBAYES block for the MrBayes run
         nexus_file.write("BEGIN MRBAYES;\n")
+        for region_name, region_start, region_end in regions:         # Write partitions
+            length = region_end - region_start + 1
+            end = start + length - 1
+            nexus_file.write(f"    CHARSET {region_name} = {region_start}-{region_end};\n")
+            start = end + 1
 
         nexus_file.write("\n")
         nexus_file.write("    set autoclose=yes;\n")
         nexus_file.write("    lset nst=6 rates=gamma;\n")
         
-        partition_mtdna = ", ".join([f"{region_name}" for region_name in region_lengths.keys()])
-        nexus_file.write(f"    partition mtDNA = {len(region_lengths)}: {partition_mtdna};\n")
+        partitions_mtdna = ", ".join([f"{region_name}" for region_name in region_to_length.keys()])
+        partitions_count = len(region_to_length)
+        nexus_file.write(f"    partition mtDNA = {partitions_count}: {partitions_mtdna};\n")
         nexus_file.write("    set partition=mtDNA;\n")
         nexus_file.write("    unlink statefreq=(all) revmat=(all) shape=(all) pinvar=(all);\n")
         nexus_file.write("    prset ratepr=variable;\n")
-        nexus_file.write("    mcmcp ngen=1000000 samplefreq=1000 nchains=4 savebrlens=yes;\n")
+        nexus_file.write("    prset clockvarpr = strict;\n")
+        nexus_file.write("    prset brlenspr = clock:uniform;\n")
+        nexus_file.write("    mcmcp ngen=5000000 samplefreq=1000 nchains=4 savebrlens=yes;\n")
         nexus_file.write("    mcmc;\n")
         nexus_file.write("    sump burnin=250000;\n")
         nexus_file.write("    sumt burnin=250000;\n")

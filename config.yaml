@@ -1,4 +1,4 @@
 reference_fasta: input/RefSeqNC_008092.fasta
 sequences_fasta: input/sequences_complete.fasta
 annotation_file: input/RefSeqNC_008092.gff3
-output_prefix: analysis
+output_prefix: wolves_run

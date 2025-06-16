@@ -16,14 +16,15 @@ def run_mafft_alignment_linux(reference_fasta, sequences_fasta, output_alignment
     - sequences_fasta: Path to the FASTA file containing the sequences to be aligned.
     - output_alignment_file: Path to save the output alignment in FASTA format.
     """
-    with open("processed/combined.fasta", "w") as combined:
+    all_sequences_file="processed/combined.fasta"
+    with open(f"{all_sequences_file}", "w") as combined:
         with open(reference_fasta, "r") as ref_file:
             combined.write(ref_file.read())
             combined.write("\n")  # Ensure newline between files
         with open(sequences_fasta, "r") as seq_file:
             combined.write(seq_file.read())
 
-    mafft_command = f"mafft --auto combined.fasta > {output_alignment_file}"
+    mafft_command = f"mafft --auto {all_sequences_file} > {output_alignment_file}"
     subprocess.run(mafft_command, shell=True, check=True)
     print(f"MAFFT alignment completed. Output saved to {output_alignment_file}")
     if os.path.exists("processed/combined.fasta"):
