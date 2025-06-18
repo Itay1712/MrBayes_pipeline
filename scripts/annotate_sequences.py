@@ -1,6 +1,6 @@
 import subprocess
 import argparse
-from Bio import AlignIO
+from Bio import AlignIO, SeqIO
 from Bio.Align import MultipleSeqAlignment
 from Bio.SeqRecord import SeqRecord
 from Bio.Seq import Seq
@@ -8,27 +8,51 @@ import os
 
 
 def run_mafft_alignment_linux(reference_fasta, sequences_fasta, output_alignment_file):
-    """
-    Aligns the sequences to the reference using MAFFT via Linux command line and saves the alignment.
-    
-    Parameters:
-    - reference_fasta: Path to the reference FASTA file.
-    - sequences_fasta: Path to the FASTA file containing the sequences to be aligned.
-    - output_alignment_file: Path to save the output alignment in FASTA format.
-    """
-    all_sequences_file="processed/combined.fasta"
-    with open(f"{all_sequences_file}", "w") as combined:
-        with open(reference_fasta, "r") as ref_file:
-            combined.write(ref_file.read())
-            combined.write("\n")  # Ensure newline between files
-        with open(sequences_fasta, "r") as seq_file:
-            combined.write(seq_file.read())
+    """Run MAFFT while preserving ``?`` characters in the sequences."""
+
+    # Read reference and sequences
+    records = list(SeqIO.parse(reference_fasta, "fasta"))
+    records += list(SeqIO.parse(sequences_fasta, "fasta"))
+
+    # Record ``?`` positions per sequence and replace them with ``N``
+    qmark_positions = {}
+    for rec in records:
+        seq_str = str(rec.seq)
+        positions = [i for i, c in enumerate(seq_str) if c == "?"]
+        if positions:
+            qmark_positions[rec.id] = set(positions)
+            seq_str = seq_str.replace("?", "N")
+            rec.seq = Seq(seq_str)
+
+    all_sequences_file = "processed/combined.fasta"
+    SeqIO.write(records, all_sequences_file, "fasta")
 
     mafft_command = f"mafft --auto {all_sequences_file} > {output_alignment_file}"
     subprocess.run(mafft_command, shell=True, check=True)
     print(f"MAFFT alignment completed. Output saved to {output_alignment_file}")
-    if os.path.exists("processed/combined.fasta"):
-        os.remove("processed/combined.fasta")
+    if os.path.exists(all_sequences_file):
+        os.remove(all_sequences_file)
+
+    # Restore ``?`` characters in the aligned sequences if necessary
+    if qmark_positions:
+        alignment = AlignIO.read(output_alignment_file, "fasta")
+        restored_records = []
+        for rec in alignment:
+            positions = qmark_positions.get(rec.id)
+            if not positions:
+                restored_records.append(rec)
+                continue
+            seq_chars = list(str(rec.seq))
+            ungapped_idx = 0
+            for i, ch in enumerate(seq_chars):
+                if ch != "-":
+                    if ungapped_idx in positions:
+                        seq_chars[i] = "?"
+                    ungapped_idx += 1
+            restored_records.append(SeqRecord(Seq("".join(seq_chars)), id=rec.id, description=""))
+
+        AlignIO.write(MultipleSeqAlignment(restored_records), output_alignment_file, "fasta")
+        print("Restored '?' characters in alignment.")
 
 def remove_gaps_and_ns_from_alignment(input_alignment_file, output_alignment_file):
     """

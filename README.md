@@ -26,3 +26,7 @@ The reference annotation file is expected at the same location as the reference
 FASTA, with the extension replaced by `.gff3`.
 
 Ensure that MAFFT is installed and available on your system path before running the pipeline.
+
+The pipeline preserves `?` characters that represent missing data in the input
+FASTA files. It masks them as `N` during the MAFFT run and restores the `?`
+positions afterwards so they appear in the final alignment.
