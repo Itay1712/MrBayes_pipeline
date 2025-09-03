@@ -21,6 +21,8 @@ The script will create an alignment with MAFFT, adjust the reference annotations
 - `reference_fasta`: path to the reference genome sequence.
 - `sequences_fasta`: path to the sequences to align.
 - `output_prefix`: prefix for all pipeline outputs (alignment, annotation and NEXUS file).
+- `include_partitions`: list of region names to keep in the final alignment. Any
+  regions not listed here will be removed before the NEXUS file is generated.
 
 The reference annotation file is expected at the same location as the reference
 FASTA, with the extension replaced by `.gff3`.

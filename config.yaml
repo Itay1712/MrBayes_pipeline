@@ -1,3 +1,6 @@
 reference_fasta: RefSeqNC_008092.fasta
 sequences_fasta: sequences_complete.fasta
 output_prefix: analysis
+include_partitions:
+  - gene_ND1
+  - gene_COI
