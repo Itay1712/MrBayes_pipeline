@@ -2,7 +2,13 @@ from Bio import AlignIO
 from collections import defaultdict
 import argparse
 
-def create_nexus_from_alignment_and_annotation(alignment_file, annotation_file, output_nexus):
+
+def create_nexus_from_alignment_and_annotation(
+    alignment_file,
+    annotation_file,
+    output_nexus,
+    include_partitions=None,
+):
     """
     Creates a NEXUS file with partition information based on the alignment and GFF3 annotations.
     
@@ -10,19 +16,19 @@ def create_nexus_from_alignment_and_annotation(alignment_file, annotation_file, 
     - alignment_file: Path to the multiple sequence alignment (in FASTA format).
     - annotation_file: Path to the GFF3 annotation file.
     - output_nexus: Path to save the generated NEXUS file.
+    - include_partitions: Optional list of region names to include. If provided,
+      only these partitions will be kept in the final alignment and NEXUS file.
     """
     
     # Step 1: Parse the alignment file (in FASTA format) using Biopython
     alignment = AlignIO.read(alignment_file, "fasta")
-    sequences = {record.id: str(record.seq) for record in alignment}
-    ntax = len(sequences)   # Number of taxa (sequences)
-    nchar = len(alignment[0])  # Number of characters (alignment length)
-    
+    original_sequences = {record.id: str(record.seq) for record in alignment}
+
     # Step 2: Parse the GFF3 file to extract regions and calculate region lengths
     region_lengths = defaultdict(int)
     regions = []
-    
-    with open(annotation_file, 'r') as gff:
+
+    with open(annotation_file, "r") as gff:
         for line in gff:
             if line.startswith("#") or len(line.strip()) == 0:
                 continue
@@ -31,9 +37,30 @@ def create_nexus_from_alignment_and_annotation(alignment_file, annotation_file, 
             region_start = int(fields[3])
             region_end = int(fields[4])
             region_length = region_end - region_start + 1
+
+            if include_partitions and region_name not in include_partitions:
+                continue
+
             region_lengths[region_name] += region_length
-            regions.append((region_name, region_start, region_end))
-    
+            regions.append((region_name, region_start, region_end, region_length))
+
+    # Build sequences containing only the selected regions
+    sequences = {record_id: "" for record_id in original_sequences}
+    for region_name, region_start, region_end, region_length in regions:
+        for record_id, seq in original_sequences.items():
+            sequences[record_id] += seq[region_start - 1 : region_end]
+
+    ntax = len(sequences)
+    nchar = len(next(iter(sequences.values()))) if sequences else 0
+
+    # Adjust region coordinates for the concatenated alignment
+    adjusted_regions = []
+    current_pos = 1
+    for region_name, _, _, region_length in regions:
+        adjusted_regions.append((region_name, current_pos, current_pos + region_length - 1))
+        current_pos += region_length
+    regions = adjusted_regions
+
     # Step 3: Generate NEXUS file
     with open(output_nexus, "w") as nexus_file:
         # Write NEXUS header
@@ -42,14 +69,14 @@ def create_nexus_from_alignment_and_annotation(alignment_file, annotation_file, 
         nexus_file.write(f"    DIMENSIONS NTAX={ntax} NCHAR={nchar};\n")
         nexus_file.write("    FORMAT DATATYPE=DNA GAP=- MISSING=?;\n")
         nexus_file.write("    MATRIX\n")
-        
+
         # Write concatenated sequences
         for sample, sequence in sequences.items():
             nexus_file.write(f"{sample}    {sequence}\n")
-        
+
         nexus_file.write("    ;\n")
         nexus_file.write("END;\n\n")
-        
+
         # Write partition information using the GFF3 regions
         nexus_file.write("BEGIN SETS;\n")
         for region_name, region_start, region_end in regions:
@@ -61,7 +88,7 @@ def create_nexus_from_alignment_and_annotation(alignment_file, annotation_file, 
         nexus_file.write("\n")
         nexus_file.write("    set autoclose=yes;\n")
         nexus_file.write("    lset nst=6 rates=gamma;\n")
-        
+
         partition_mtdna = ", ".join([f"{region_name}" for region_name in region_lengths.keys()])
         nexus_file.write(f"    partition mtDNA = {len(region_lengths)}: {partition_mtdna};\n")
         nexus_file.write("    set partition=mtDNA;\n")

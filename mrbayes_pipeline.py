@@ -18,6 +18,7 @@ def run_pipeline(config_file: str):
     seqs_fasta = cfg['sequences_fasta']
     annotation = str(Path(ref_fasta).with_suffix('.gff3'))
     prefix = cfg.get('output_prefix', 'output')
+    include_partitions = cfg.get('include_partitions')
 
     alignment_file = f"{prefix}_alignment.fasta"
     clean_alignment = f"{prefix}_clean.fasta"
@@ -38,7 +39,12 @@ def run_pipeline(config_file: str):
     fill_unannotated_regions_gff3(adjusted_annotation, alignment_length, filled_annotation)
 
     # Create NEXUS file with partitions for MrBayes
-    create_nexus_from_alignment_and_annotation(clean_alignment, filled_annotation, nexus_file)
+    create_nexus_from_alignment_and_annotation(
+        clean_alignment,
+        filled_annotation,
+        nexus_file,
+        include_partitions=include_partitions,
+    )
 
 
 if __name__ == '__main__':
